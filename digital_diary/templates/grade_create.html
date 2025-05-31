@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Добавить оценку для {{ subject }} - {{ class_name }}</h2>
+<p>Ученик: {{ student.last_name }} {{ student.first_name }}, Дата: {{ date }}</p>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+</form>
+{% endblock %}

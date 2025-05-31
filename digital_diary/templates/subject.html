@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+  <div class="card-header">
+    <h2 class="card-title">Предмет: {{ subject }}</h2>
+  </div>
+  <div class="card-body">
+    <h3>Классы</h3>
+    <ul class="list-group">
+      {% for class_name in classes %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span>{{ class_name }}</span>
+        <div>
+          <a href="{% url 'grades' subject=subject class_name=class_name %}" class="btn btn-sm btn-primary me-2">Оценки</a>
+          <a href="{% url 'attendance' subject=subject class_name=class_name %}" class="btn btn-sm btn-secondary">Посещаемость</a>
+        </div>
+      </li>
+      {% empty %}
+      <li class="list-group-item">Нет записей для данного предмета</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

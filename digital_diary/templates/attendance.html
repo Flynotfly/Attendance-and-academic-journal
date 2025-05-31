@@ -1,0 +1,48 @@
+{# attendance.html #}
+{% extends "base.html" %}
+{% load my_filters %}
+
+{% block content %}
+<h2 class="mb-4">Посещаемость по предмету {{ subject }} для класса {{ class_name }}</h2>
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Ученик</th>
+                {% for date in dates %}
+                <th>{{ date }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>{{ student.last_name }} {{ student.first_name }}</td>
+                {% for date in dates %}
+                <td>
+                    {% with cell=table_data|get_item:student.id|get_item:date %}
+                        {% if cell and cell.id %}
+                            <!-- Record exists: clicking toggles attendance -->
+                            <a href="{% url 'attendance-edit' subject=subject class_name=class_name pk=cell.id %}"
+                               class="text-decoration-none">
+                                {{ cell.status }}
+                            </a>
+                        {% else %}
+                            <!-- No record exists: add a new record for the date -->
+                            <a href="{% url 'attendance-create' subject=subject class_name=class_name student_id=student.id date=date %}"
+                               class="text-decoration-none">
+                                -
+                            </a>
+                        {% endif %}
+                    {% endwith %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'attendance-add-date' subject=subject class_name=class_name %}" class="btn btn-success mb-3">
+      Добавить новую дату
+    </a>
+</div>
+{% endblock %}

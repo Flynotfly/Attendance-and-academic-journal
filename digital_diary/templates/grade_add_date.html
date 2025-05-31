@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Добавить оценки для нового дня - {{ subject }} для класса {{ class_name }}</h2>
+
+{% if error %}
+  <div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+<form method="post">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="date" class="form-label">Дата:</label>
+    <input type="date" id="date" name="date" class="form-control" required>
+  </div>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Ученик</th>
+        <th>Оценка</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for student in students %}
+      <tr>
+        <td>{{ student.last_name }} {{ student.first_name }}</td>
+        <td>
+          <input type="number" name="student_{{ student.id }}" class="form-control" placeholder="Оценка">
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <button type="submit" class="btn btn-primary">Сохранить оценки</button>
+</form>
+{% endblock %}

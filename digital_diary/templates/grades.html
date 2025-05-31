@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load my_filters %}
+
+{% block content %}
+<h2 class="mb-4">Оценки по предмету {{ subject }} для класса {{ class_name }}</h2>
+
+<!-- Button to add a new date column -->
+<div class="mb-3">
+    <a href="{% url 'grade-add-date' subject=subject class_name=class_name %}" class="btn btn-success">
+        Добавить оценку на новую дату
+    </a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Ученик</th>
+                {% for date in dates %}
+                <th>{{ date }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>{{ student.last_name }} {{ student.first_name }}</td>
+                {% for date in dates %}
+                <td>
+                    {% with grades=table_data|get_item:student.id|get_item:date %}
+                        {% if grades %}
+                            {% for grade in grades %}
+                                <a href="{% url 'grade-edit' subject=subject class_name=class_name pk=grade.pk %}" class="text-decoration-none">
+                                    {{ grade.value }}
+                                </a>{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                            <br>
+                            <a href="{% url 'grade-create' subject=subject class_name=class_name student_id=student.id date=date %}" class="text-decoration-none">
+                                +
+                            </a>
+                        {% else %}
+                            <a href="{% url 'grade-create' subject=subject class_name=class_name student_id=student.id date=date %}" class="text-decoration-none">
+                                -
+                            </a>
+                        {% endif %}
+                    {% endwith %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
